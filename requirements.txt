@@ -1,5 +1,4 @@
 ablog==0.9.2
--e git+https://github.com/eliasdabbas/advertools.git@9d5a298728097768f19ff79a96fa5ad0b47aff8e#egg=advertools
 agate==1.6.1
 agate-dbf==0.2.0
 agate-excel==0.2.2
