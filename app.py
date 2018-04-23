@@ -10,7 +10,9 @@ from dash.dependencies import Input, Output, State
 import plotly.graph_objs as go
 import pandas as pd
 
+
 app = dash.Dash()
+server= app.server
 
 app.layout = html.Div([
     html.Br(), html.Br(),
@@ -130,4 +132,4 @@ def show_submit_button(products, words, match_types, campaign_name):
 
 
 if __name__ == '__main__':
-    app.run_server(port=1234)
+    app.run_server()
