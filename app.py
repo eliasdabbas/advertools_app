@@ -34,6 +34,10 @@ app.layout = html.Div([
                          options=[{'label': match, 'value': match}
                                   for match in ['Exact', 'Phrase', 'Modified', 'Broad']],
                          value=['Exact', 'Phrase']),
+            html.Br(),
+            dcc.Checklist(id='order_matters',
+                          values=[True],
+                          options=[{'label': 'Order matters', 'value': True}]),
 
             html.Br(), html.Br(),
             html.Div([
@@ -100,8 +104,9 @@ def display_kw_df_summary(kw_df_list):
              [State('products_table', 'value'),
               State('words_table', 'value'),
               State('match_types', 'value'),
-              State('campaign_name', 'value')])
-def generate_kw_df(button, products, words, match_types, campaign_name):
+              State('campaign_name', 'value'),
+              State('order_matters', 'values')])
+def generate_kw_df(button, products, words, match_types, campaign_name, order_matters):
     if products and words:
         product_list = list({x.strip() for x in products.split('\n') if x})
         if '' in product_list:
@@ -110,6 +115,7 @@ def generate_kw_df(button, products, words, match_types, campaign_name):
 
         return adv.kw_generate(product_list, word_list, 
                                match_types=match_types,
+                               order_matters=bool(order_matters),
                                campaign_name=campaign_name).to_dict('records')
 
 @app.callback(Output('download_link', 'href'),
