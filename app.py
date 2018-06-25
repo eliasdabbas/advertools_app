@@ -9,7 +9,10 @@ import dash_table_experiments as dt
 from dash.dependencies import Input, Output, State
 import plotly.graph_objs as go
 import pandas as pd
+import logging
 
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s==%(funcName)s==%(message)s')
 
 app = dash.Dash()
 server= app.server
@@ -75,12 +78,14 @@ app.layout = html.Div([
                    id='download_link',
                    download="rawdata.csv",
                    href="",
-                   target="_blank"),
+                   target="_blank",
+                   n_clicks=0),
             html.Div(id='kw_df_summary', style={'width': '80%','margin-left': '5%'})
         ], style={'width': '60%', 'display': 'inline-block', 'float': 'right',
                   'margin-right': '5%', 'font-family': 'Palatino'}),
     ]),
-    html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), 
+    html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(), html.Br(),
+    html.Div(id='download')
 ], style={'background-color': '#eeeeee', 'font-family': 'Palatino'})
 
 @app.callback(Output('kw_df_summary', 'children'),
@@ -107,6 +112,14 @@ def display_kw_df_summary(kw_df_list):
               State('campaign_name', 'value'),
               State('order_matters', 'values')])
 def generate_kw_df(button, products, words, match_types, campaign_name, order_matters):
+    if button and products and words and match_types and campaign_name:
+        msg='*'.join([arg for arg in [str(button),
+                                      '_'.join(products.split('\n')),
+                                      '_'.join(words.split('\n')),
+                                      '_'.join(match_types), campaign_name,
+                                      str(bool(order_matters))]])
+        logging.info(msg=msg)
+
     if products and words:
         product_list = list({x.strip() for x in products.split('\n') if x})
         if '' in product_list:
@@ -125,6 +138,12 @@ def download_df(data_df):
     csv_string = df.to_csv(index=False, encoding='utf-8')
     csv_string = "data:text/csv;charset=utf-8," + quote(csv_string)
     return csv_string
+
+@app.callback(Output('download', 'children'),
+             [Input('download_link', 'n_clicks')])
+def register_file_downloads(n_clicks):
+    if n_clicks:
+        logging.info(str(n_clicks) + '_file_download')
 
 @app.callback(Output('submit', 'hidden'),
              [Input('products_table', 'value'),
