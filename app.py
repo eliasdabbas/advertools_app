@@ -113,12 +113,7 @@ def display_kw_df_summary(kw_df_list):
               State('order_matters', 'values')])
 def generate_kw_df(button, products, words, match_types, campaign_name, order_matters):
     if button and products and words and match_types and campaign_name:
-        msg='*'.join([arg for arg in [str(button),
-                                      '_'.join(products.split('\n')),
-                                      '_'.join(words.split('\n')),
-                                      '_'.join(match_types), campaign_name,
-                                      str(bool(order_matters))]])
-        logging.info(msg=msg)
+        logging.info(msg=locals())
 
     if products and words:
         product_list = list({x.strip() for x in products.split('\n') if x})
