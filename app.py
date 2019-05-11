@@ -141,9 +141,10 @@ def generate_kw_df(button, products, words, match_types, campaign_name,
         if '' in product_list:
             product_list.remove('')
         word_list = list({x.strip() for x in words.split('\n')})
+        print('order matter:', order_matters)
         final_df = adv.kw_generate(product_list, word_list,
                                match_types=match_types,
-                               order_matters=bool(order_matters[0]),
+                               order_matters=bool(order_matters),
                                campaign_name=campaign_name)
         return final_df.to_dict('rows')
 
