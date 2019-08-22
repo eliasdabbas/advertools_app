@@ -36,6 +36,7 @@ app.layout = html.Div([
                     style={'text-align': 'center'}),
         ], sm=12, lg=9),
     ], style={'margin-left': '5%'}),
+    html.Hr(),
     html.Br(),
     dbc.Row([
         dbc.Col([
