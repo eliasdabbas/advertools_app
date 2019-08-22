@@ -181,6 +181,7 @@ def generate_kw_df(button, products, words, match_types, campaign_name,
               [Input('output_df', 'data')])
 def download_df(data_df):
     df = pd.DataFrame.from_dict(data_df, 'columns')
+    df = df.drop('#', axis='columns')
     csv_string = df.to_csv(index=False, encoding='utf-8')
     csv_string = "data:text/csv;charset=utf-8," + quote(csv_string)
     return csv_string
