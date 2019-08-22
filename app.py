@@ -27,12 +27,12 @@ app.layout = html.Div([
     html.Br(),
     dbc.Row([
         dbc.Col([
-            html.Img(src='data:image/png;base64,' + img_base64, width=200),
-            html.A(['online marketing', html.Br(), 'productivity & analysis'],
-                   href='https://github.com/eliasdabbas/advertools')
+            html.A([
+                html.Img(src='data:image/png;base64,' + img_base64, width=200),
+            ], href='https://github.com/eliasdabbas/advertools'),
         ], sm=12, lg=2, style={'text-align': 'center'}), html.Br(),
         dbc.Col([
-            html.H2('Search Engine Marketing: Keyword Generation Tool',
+            html.H1('Search Engine Marketing: Keyword Generation Tool',
                     style={'text-align': 'center'}),
         ], sm=12, lg=9),
     ], style={'margin-left': '5%'}),
@@ -81,21 +81,58 @@ app.layout = html.Div([
             dcc.Loading(
                 DataTable(id='output_df',
                           virtualization=True,
-                          n_fixed_rows=1,
-                          style_cell={'width': '150px'},
+                          fixed_rows={'headers': True},
+                          style_header={'background-color': '#A6A7A7'},
+                          style_cell={'font-family': 'Source Sans Pro'},
                           columns=[{'name': col, 'id': col}
-                                   for col in ['Campaign', 'Ad Group',
+                                   for col in ['#', 'Campaign', 'Ad Group',
                                                'Keyword', 'Criterion Type',
                                                'Labels']]),
             ),
             html.Br(),
-            html.A('Download Keywords',
+            html.B(            html.A('Download Keywords',
                    id='download_link',
                    download="rawdata.csv",
                    href="",
                    target="_blank",
                    n_clicks=0),
-            html.Div(id='kw_df_summary')
+),
+            html.Div(id='kw_df_summary'),
+            html.Div([
+                html.Br(), html.Br(),
+                html.H3('About the tool:'),
+                html.Content('In the "Products" column, simply enter the '
+                             'products/services you are trying'
+                             ' to promote, one per line.\nFor "Words", think '
+                             'of verbs and words that indicate interest'
+                             'if combined with your products. Then all '
+                             'possible combinations will be genrated for you.'
+                             '\nYou can also play around with the '
+                             'other options.'),
+                html.Br(), html.Br(),
+                html.H3('Reference content:'), html.Br(),
+                html.Content('Quick overview: '),
+                html.A('Short presentation describing what generating '
+                       'keywords means (compared to researching keywords)',
+                       href='https://www.slideshare.net/eliasdabbas/dont-research-keywords-generate-them'),
+                html.Br(),
+                html.Content('For more details on the logic behind generating '
+                             'the keywords, please checkout the '),
+                html.A('DataCamp tutorial on Search Engine Marketing.',
+                       href='http://bit.ly/datacamp_sem'),
+                html.Br(),
+                html.Content('DataCamp project: '),
+                html.A('Practice generating keywords using Python and pandas',
+                       href='https://www.datacamp.com/projects/400'),
+                html.Br(),
+                html.Content('SEMrush tutorial: '),
+                html.A('Setting up SEM accounts on a large scale.',
+                       href='https://www.semrush.com/blog/setting-up-search-engine-marketing-campaigns-on-large-scale/'),
+                html.Br(),
+                html.Content('Functionality based on the '),
+                html.A('advertools', href='http://bit.ly/advertools'),
+                html.Content(' package.')
+            ] + [html.Br() for x in range(9)]),
         ], sm=11, lg=7),
     ] + [html.Br() for x in range(10)]),
     html.Div(id='download')
@@ -110,15 +147,7 @@ def display_kw_df_summary(kw_df_list):
             html.Content('Total keywords: ' + str(len(kw_df))), html.Br(),
             html.Content('Unique Keywords: ' + str(kw_df['Keyword'].nunique())),
             html.Br(),
-            html.Content('Ad Groups: ' + str(kw_df['Ad Group'].nunique())),
-            html.Br(), html.Br(),
-            html.Content('For more details on the logic behind generating '
-                         'the keywords, please checkout the '),
-            html.A('DataCamp tutorial on Search Engine Marketing.',
-                   href='http://bit.ly/datacamp_sem'), html.Br(), html.Br(),
-            html.Content('Functionality based on the '),
-            html.A('advertools', href='http://bit.ly/advertools'),
-            html.Content(' package.')]
+            html.Content('Ad Groups: ' + str(kw_df['Ad Group'].nunique()))]
 
 
 @app.callback(Output('output_df', 'data'),
@@ -141,11 +170,11 @@ def generate_kw_df(button, products, words, match_types, campaign_name,
         if '' in product_list:
             product_list.remove('')
         word_list = list({x.strip() for x in words.split('\n')})
-        print('order matter:', order_matters)
         final_df = adv.kw_generate(product_list, word_list,
                                match_types=match_types,
                                order_matters=bool(order_matters),
                                campaign_name=campaign_name)
+        final_df['#'] = list(range(1, len(final_df) + 1))
         return final_df.to_dict('rows')
 
 @app.callback(Output('download_link', 'href'),
