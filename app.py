@@ -25,19 +25,19 @@ server = app.server
 
 app.layout = html.Div([
     html.Br(),
-    dbc.Row([
-        dbc.Col([
-            html.A([
-                html.Img(src='data:image/png;base64,' + img_base64, width=200),
-            ], href='https://github.com/eliasdabbas/advertools'),
-        ], sm=12, lg=2, style={'text-align': 'center'}), html.Br(),
-        dbc.Col([
-            html.H1('Search Engine Marketing: Keyword Generation Tool',
-                    style={'text-align': 'center'}),
-        ], sm=12, lg=9),
-    ], style={'margin-left': '5%'}),
-    html.Hr(),
-    html.Br(),
+    # dbc.Row([
+    #     dbc.Col([
+    #         html.A([
+    #             html.Img(src='data:image/png;base64,' + img_base64, width=200),
+    #         ], href='https://github.com/eliasdabbas/advertools'),
+    #     ], sm=12, lg=2, style={'text-align': 'center'}), html.Br(),
+    #     dbc.Col([
+    #         html.H1('Search Engine Marketing: Keyword Generation Tool',
+    #                 style={'text-align': 'center'}),
+    #     ], sm=12, lg=9),
+    # ], style={'margin-left': '5%'}),
+    # html.Hr(),
+    # html.Br(),
     dbc.Row([
         dbc.Col([
             dbc.Label('Edit campaign name:'),
@@ -76,6 +76,7 @@ app.layout = html.Div([
         ], sm=11, lg=3, style={'margin-left': '5%'}),
         dbc.Col(lg=1),
         dbc.Col([
+            html.Br(),
             dbc.Button(id='submit', children='Generate Keywords',
                        style={'display': 'none'}),
             html.Br(), html.Br(),
@@ -135,9 +136,9 @@ app.layout = html.Div([
                 html.Content(' package.')
             ] + [html.Br() for x in range(9)]),
         ], sm=11, lg=7),
-    ] + [html.Br() for x in range(10)]),
+    ]),
     html.Div(id='download')
-], style={'background-color': '#eeeeee'})
+] + [html.Br() for i in range(3)], style={'background-color': '#eeeeee'})
 
 
 @app.callback(Output('kw_df_summary', 'children'),
@@ -208,4 +209,4 @@ def show_submit_button(products, words, match_types, campaign_name):
 
 
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)
